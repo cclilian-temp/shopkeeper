@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-4.1.xsd">
+
+
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="transactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager" />
+	</bean>
+
+	<bean id="groupDao" class="com.mall.shopkeeper.dao.impl.GroupDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+		<property name="transactionTemplate" ref="transactionTemplate" />
+	</bean>
+	
+	<bean id="groupProductionDao" class="com.mall.shopkeeper.dao.impl.GroupProductionDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+		<property name="transactionTemplate" ref="transactionTemplate" />
+	</bean>
+	
+	<bean id="orderDao" class="com.mall.shopkeeper.dao.impl.OrderDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+		<property name="transactionTemplate" ref="transactionTemplate" />
+	</bean>
+	
+	<bean id="productionDao" class="com.mall.shopkeeper.dao.impl.ProductionDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+		<property name="transactionTemplate" ref="transactionTemplate" />
+	</bean>
+	
+	<bean id="storeDao" class="com.mall.shopkeeper.dao.impl.StoreDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+		<property name="transactionTemplate" ref="transactionTemplate" />
+	</bean>
+	
+	<bean id="typeDao" class="com.mall.shopkeeper.dao.impl.TypeDaoImpl">
+		<property name="dataSource" ref="dataSource" />
+		<property name="transactionTemplate" ref="transactionTemplate" />
+	</bean>
+</beans> 
