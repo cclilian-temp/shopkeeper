@@ -41,7 +41,9 @@
 							    <div class="form-group">
 							        <label class="col-sm-3 control-label">分类：</label>
 							        <div class="col-sm-9">
-							            <input type="text" name="" class="form-control" placeholder="请输入文本" id="type">
+							            <select class="form-control" id="type_search">
+							            	<option value=""></option>
+							            </select>
 							        </div>
 							    </div>
 							</div>
@@ -92,13 +94,8 @@
 		    			</div>
                     	<div class="form-group">
 		        			<label class="col-sm-3 control-label">分类：</label>
-							<div class="col-sm-8" id="type_add">
-							    <select class="form-control" name="">
-							        <option>选项 1</option>
-							        <option>选项 2</option>
-							        <option>选项 3</option>
-							        <option>选项 4</option>
-							    </select>
+							<div class="col-sm-8">
+							    <select class="form-control" id="type_add"></select>
 							</div>
 		    			</div>
 		    			<div class="form-group">
@@ -141,13 +138,8 @@
 		    			</div>
                     	<div class="form-group">
 		        			<label class="col-sm-3 control-label">分类：</label>
-							<div class="col-sm-8" id="type_edit">
-							    <select class="form-control" name="">
-							        <option>选项 1</option>
-							        <option>选项 2</option>
-							        <option>选项 3</option>
-							        <option>选项 4</option>
-							    </select>
+							<div class="col-sm-8">
+							    <select class="form-control" id="type_edit"></select>
 							</div>
 		    			</div>
 		    			<div class="form-group">
@@ -201,13 +193,15 @@
         
         /* Init DataTables */
         searchProductions();
+        /* Init type */
+        searchType()
 
     });	
     
     	function createProduction(){
     		var model = $('#model_add').val();
-    		var type = $('#type_add').val();
-    		type = "default";
+    		var type = $('#type_add').find("option:selected").text();;
+    		//type = "default";
     		var price = parseFloat($('#price_add').val());
     		var lowestDiscount = parseFloat($('#lowestDiscount_add').val());
     		
@@ -258,8 +252,8 @@
     
         function searchProductions(){
         	var model = $("#model").val();
-        	var type = $("type").val();
-        	type = "default";
+        	var type = $("#type_search").val();
+        	//type = "default";
         	var url = '/ws/production/list?' + 'model=' + model + '&type=' + type;
         	$.ajax({
 				async: false,
@@ -344,7 +338,7 @@
         
         function edit(model,type,price,lowestDiscount,specialDiscount){
         	document.getElementById("model_edit").value=model;
-        	//document.getElementById("type_edit").value=type;
+        	document.getElementById("type_edit").value=type;
         	document.getElementById("price_edit").value=price;
         	document.getElementById("lowestDiscount_edit").value=lowestDiscount;
         	document.getElementById("specialDiscount_edit").value=specialDiscount;
@@ -355,7 +349,7 @@
         function updateProduction(){
         	var model = $('#model_edit').val();
     		var type = $('#type_edit').val();
-    		type = "default";
+    		//type = "default";
     		var price = parseFloat($('#price_edit').val());
     		var lowestDiscount = parseFloat($('#lowestDiscount_edit').val());
     		var specialDiscount = parseFloat($('#specialDiscount_edit').val());
@@ -413,6 +407,34 @@
     			},
     			
     		});
+        }
+        
+        function searchType(){
+        	var url = "/ws/type/list";
+        	$.ajax({
+				async: false,
+				url: url,
+				type: "GET",
+				dataType: "json",
+				success: function(data){
+					if(data.code == 1) {
+						var type = new Array();
+						type = data.data;
+						var dataSet = new Array();
+						for(var i in type) {
+							var item = new Array();
+							var id = type[i].id;
+							var name = type[i].name;
+							$("#type_search").append("<option value='" + id + "'>" + name + "</option>"); 
+							$("#type_add").append("<option value='" + id + "'>" + name + "</option>"); 
+							$("#type_edit").append("<option value='" + name + "'>" + name + "</option>"); 
+						}
+					} else {
+						var msg = data.message;
+    					//$.toast({text:msg,type:'danger',position:'center'});
+					}
+				}
+			});
         }
     </script>
 
