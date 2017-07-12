@@ -2,10 +2,16 @@ package com.mall.shopkeeper.dao;
 
 import java.util.List;
 
+import com.mall.shopkeeper.dao.model.Type;
+
 public interface TypeDao {
-    public List<String> getTypes();
+    public List<Type> getTypes();
     
-    public void create(String name);
+    public List<String> getTypeIds();
     
-    public void remove(String name);
+    public void create(Type type);
+    
+    public void remove(String id);
+
+	public void update(Type type);
 }

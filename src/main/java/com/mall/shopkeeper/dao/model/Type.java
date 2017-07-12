@@ -3,10 +3,17 @@ package com.mall.shopkeeper.dao.model;
 import java.util.Date;
 
 public class Type {
+	private String id;
     private String name;
     private Date ct;
     private Date ut;
-    public String getName() {
+    public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
+	public String getName() {
         return name;
     }
     public void setName(String name) {

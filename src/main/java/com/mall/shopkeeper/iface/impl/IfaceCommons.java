@@ -63,7 +63,7 @@ public class IfaceCommons {
     }
     
     protected  boolean isTypeExist(String type) {
-        List<String> types = typeDao.getTypes();
+        List<String> types = typeDao.getTypeIds();
         return types.contains(type);
     }
     

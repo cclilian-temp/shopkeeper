@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import com.mall.shopkeeper.dao.TypeDao;
+import com.mall.shopkeeper.dao.model.Type;
 
 public class TypeDaoImpl extends JdbcDaoSupport implements TypeDao {
 
@@ -26,34 +27,67 @@ protected final Logger logger = LoggerFactory.getLogger(getClass());
     }
     
     @Override
-    public List<String> getTypes() {
-        String sql = "select `name` from `type`";
+    public List<String> getTypeIds() {
+        String sql = "select `id` from `type`";
         return super.getJdbcTemplate().query(sql, new RowMapper<String>(){
             @Override
             public String mapRow(ResultSet rs, int num) throws SQLException {
-                return rs.getString("name");
+                return rs.getString("id");
             }     
         });
     }
-
+    
     @Override
-    public void create(final String name) {
-        final Date now = new Date();
-        String sql = "insert into `type` (`name`, `ct`, `ut`) values(?, ?, ?)";
-        super.getJdbcTemplate().update(sql, new PreparedStatementSetter(){
+    public List<Type> getTypes() {
+        String sql = "select `id` , `name` , `ct`, `ut` from `type`";
+        return super.getJdbcTemplate().query(sql, new RowMapper<Type>(){
             @Override
-            public void setValues(PreparedStatement ps) throws SQLException {
-                ps.setString(1, name);
-                ps.setDate(2, new java.sql.Date(now.getTime()));
-                ps.setDate(3, new java.sql.Date(now.getTime()));
+            public Type mapRow(ResultSet rs, int num) throws SQLException {
+            	Type type = new Type();
+            	type.setId(rs.getString("id"));
+            	type.setName(rs.getString("name"));
+            	type.setCt(rs.getDate("ct"));
+            	type.setUt(rs.getDate("ut"));
+                return type;
             }
         });
     }
 
     @Override
-    public void remove(String name) {
-        String sql = "delete from `type` where name = " + "'" + name + "'";
+    public void create(final Type type) {
+    	final Date now = new Date();
+        String sql = "insert into `type`(`id`, `name`, `ct`, `ut`) "
+                + "values(?, ?, ?, ?)";
+        super.getJdbcTemplate().update(sql, new PreparedStatementSetter(){
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                ps.setString(1, type.getId());
+                ps.setString(2, type.getName());
+                ps.setDate(3, new java.sql.Date(now.getTime()));
+                ps.setDate(4, new java.sql.Date(now.getTime()));
+            }
+        });
+    }
+
+    @Override
+    public void remove(String id) {
+        String sql = "delete from `type` where id = " + "'" + id + "'";
         super.getJdbcTemplate().execute(sql);
     }
+
+	@Override
+	public void update(final Type type) {
+		final Date now = new Date();
+        String id = type.getId();
+        String sql = "update `type` set `name` = ?, `ut` = ? "
+                + "where `id` = " + "'" + id + "'";
+        super.getJdbcTemplate().update(sql, new PreparedStatementSetter(){
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                ps.setString(1, type.getName());
+                ps.setDate(2, new java.sql.Date(now.getTime()));
+            }
+        });
+	}
 
 }
