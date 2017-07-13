@@ -236,17 +236,14 @@
     			contentType: 'application/json',
     			data: data,
     			success: function(data, textStatus, jqXHR) {
+   					$('#addModal').modal('hide');
+   					var msg = data.message;
+   					alert(msg);
     				
     				if(data.code == 1) {
     					searchProductions();
-    					$('#addModal').modal('hide');
-    					//$.toast({text:'配置成功',type:'success',position:'center'});
-    				} else {
-    					var msg = data.message;
-    					$.toast({text:msg,type:'danger',position:'center'});
     				}
-    			},
-    			
+    			}
     		});
     	}
     
@@ -279,8 +276,8 @@
 							item[2] = price;
 							item[3] = lowestDiscount;
 							item[4] = specialDiscount;
-							item[5] = '<a href="#" data-toggle="modal"><i class="fa fa-edit text-navy" onclick="edit(\''+ model + '\',\'' + type + '\',\'' + price + '\',\'' + lowestDiscount + '\',\'' + specialDiscount +'\')">'
-								+ '</i></a><a  data-toggle="modal"><i class="fa fa-remove text-navy" onclick="remove(\'' + model + '\')"></i></a>';
+							item[5] = '<a href="#" data-toggle="modal"><i class="fa fa-edit fa-lg text-navy" onclick="edit(\''+ model + '\',\'' + type + '\',\'' + price + '\',\'' + lowestDiscount + '\',\'' + specialDiscount +'\')">'
+								+ '</i></a>&nbsp&nbsp<a  data-toggle="modal"><i class="fa fa-remove text-navy" onclick="remove(\'' + model + '\')"></i></a>';
 							
 							dataSet[i] = item;
 						}
@@ -425,8 +422,8 @@
 							var item = new Array();
 							var id = type[i].id;
 							var name = type[i].name;
-							$("#type_search").append("<option value='" + id + "'>" + name + "</option>"); 
-							$("#type_add").append("<option value='" + id + "'>" + name + "</option>"); 
+							$("#type_search").append("<option value='" + name + "'>" + name + "</option>"); 
+							$("#type_add").append("<option value='" + name + "'>" + name + "</option>"); 
 							$("#type_edit").append("<option value='" + name + "'>" + name + "</option>"); 
 						}
 					} else {
