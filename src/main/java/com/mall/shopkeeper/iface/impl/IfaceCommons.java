@@ -127,7 +127,7 @@ public class IfaceCommons {
     
     protected Response buildResponseFailed(String message) {
         CommonRes res = new CommonRes();
-        res.setCode(1);
+        res.setCode(0);
         res.setMessage(message);
         return this.buildResponse(res);
     }
