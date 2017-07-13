@@ -5,9 +5,11 @@ import java.util.List;
 import com.mall.shopkeeper.dao.model.Type;
 
 public interface TypeDao {
-    public List<Type> getTypes();
+    public List<Type> getTypes(String name);
     
     public List<String> getTypeIds();
+    
+    public List<String> getTypeNames();
     
     public void create(Type type);
     

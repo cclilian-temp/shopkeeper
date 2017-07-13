@@ -19,8 +19,7 @@ public interface TypeIface {
     @Path("/create")
     @PUT
     public Response create(@Context HttpServletRequest request,
-            @Context HttpServletResponse response,
-            @QueryParam("name") String name);
+            @Context HttpServletResponse response);
     
     @Path("/update")
     @POST
@@ -30,7 +29,8 @@ public interface TypeIface {
     @Path("/list")
     @GET
     public Response list(@Context HttpServletRequest request,
-            @Context HttpServletResponse response);
+            @Context HttpServletResponse response,
+            @QueryParam("name") String name);
     
     @Path("/remove")
     @GET

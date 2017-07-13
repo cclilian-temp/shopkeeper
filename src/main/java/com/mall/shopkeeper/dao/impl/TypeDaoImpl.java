@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.PreparedStatementSetter;
@@ -38,8 +39,13 @@ protected final Logger logger = LoggerFactory.getLogger(getClass());
     }
     
     @Override
-    public List<Type> getTypes() {
-        String sql = "select `id` , `name` , `ct`, `ut` from `type`";
+    public List<Type> getTypes(String name) {
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("select `id` , `name` , `ct`, `ut` from `type`");
+        if(StringUtils.isNotBlank(name)) {
+            sb.append(" where name = " + "'" + name + "'");
+        }
+    	String sql = sb.toString();
         return super.getJdbcTemplate().query(sql, new RowMapper<Type>(){
             @Override
             public Type mapRow(ResultSet rs, int num) throws SQLException {
@@ -87,6 +93,17 @@ protected final Logger logger = LoggerFactory.getLogger(getClass());
                 ps.setString(1, type.getName());
                 ps.setDate(2, new java.sql.Date(now.getTime()));
             }
+        });
+	}
+
+	@Override
+	public List<String> getTypeNames() {
+		String sql = "select `name` from `type`";
+        return super.getJdbcTemplate().query(sql, new RowMapper<String>(){
+            @Override
+            public String mapRow(ResultSet rs, int num) throws SQLException {
+                return rs.getString("name");
+            }     
         });
 	}
 

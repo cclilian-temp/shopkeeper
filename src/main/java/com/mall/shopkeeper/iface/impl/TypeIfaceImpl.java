@@ -16,8 +16,11 @@ import com.mall.shopkeeper.iface.TypeIface;
 public class TypeIfaceImpl extends IfaceCommons implements TypeIface {
     
     @Override
-    public Response create(HttpServletRequest request, HttpServletResponse response, String name) {
+    public Response create(HttpServletRequest request, HttpServletResponse response) {
     	Type type = super.parseRequest(request, Type.class);
+    	if(isTypeNameExist(type.getName())) {
+    		return super.buildResponseFailed("该类型已存在");
+    	}
         String id = UUID.randomUUID().toString();
         type.setId(id);
         try{
@@ -30,10 +33,10 @@ public class TypeIfaceImpl extends IfaceCommons implements TypeIface {
     }
 
     @Override
-    public Response list(HttpServletRequest request, HttpServletResponse response) {
+    public Response list(HttpServletRequest request, HttpServletResponse response, String name) {
         List<Type> types = new ArrayList<Type>();
         try{
-        	types = typeDao.getTypes();
+        	types = typeDao.getTypes(name);
         }catch(Exception e){
             logger.error(e.toString(), e);
             return super.buildResponseFailed("查询店铺失败");
@@ -60,8 +63,11 @@ public class TypeIfaceImpl extends IfaceCommons implements TypeIface {
     	Type type = super.parseRequest(request, Type.class);
         String id = type.getId();
         if(!super.isTypeExist(id)){
-            return super.buildResponseFailed("该店铺编号不存在");
+            return super.buildResponseFailed("该类型编号不存在");
         }
+        if(isTypeNameExist(type.getName())) {
+    		return super.buildResponseFailed("该类型已存在");
+    	}
         try{
             super.typeDao.update(type);
         } catch(Exception e) {
@@ -70,4 +76,9 @@ public class TypeIfaceImpl extends IfaceCommons implements TypeIface {
         }
         return super.buildResponseOK("更新店铺成功", null);
 	}
+    
+    private boolean isTypeNameExist(String name) {
+    	List<String> types = typeDao.getTypeNames();
+		return types.contains(name);
+    }
 }
