@@ -31,25 +31,15 @@
                         <form role="form" class="form-horizontal m-t">
                         	<div class="col-md-6">
 							    <div class="form-group">
-							        <label class="col-sm-3 control-label">店名：</label>
+							        <label class="col-sm-3 control-label">类型名称：</label>
 							        <div class="col-sm-9">
 							            <input type="text" name="" class="form-control" id="name" placeholder="请输入文本">
 							        </div>
 							    </div>
 							</div>
-							<div class="col-md-6">
-							    <div class="form-group">
-							        <label class="col-sm-3 control-label">电话：</label>
-							        <div class="col-sm-9">
-							            <input type="text" name="" class="form-control" id="tel" placeholder="请输入文本">
-							        </div>
-							    </div>
-							</div>
-                            <div class="form-group draggable">
-                                <div class="col-sm-12 col-sm-offset-3">
-                                    <button class="btn btn-primary" type="button" onclick="search()">查询</button>
-                                    <!-- <button class="btn btn-white" type="submit">取消</button> -->
-                                </div>
+                            <div class="col-sm-6">
+                                <button class="btn btn-primary" type="button" onclick="search()">查询</button>
+                                <!-- <button class="btn btn-white" type="submit">取消</button> -->
                             </div>
                         </form>
                         <div class="clearfix"></div>
@@ -93,7 +83,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
-                    <button type="button" class="btn btn-primary" onclick="createStore()">保存</button>
+                    <button type="button" class="btn btn-primary" onclick="createType()">保存</button>
                 </div>
             </div>
         </div>
@@ -156,13 +146,13 @@
 
     });
         
-        function createStore(){
+        function createType(){
         	var name = $('#name_add').val();
         	
         	if(!name){
         		var msg = "您未输入类型名称, 类型名称为必传参数";
+        		alert(msg);
         		return;
-    			$.toast({text:msg,type:'danger',position:'center'});
         	}
         	var type = new Object();
         	type.name = name;
@@ -176,14 +166,12 @@
     			contentType: 'application/json',
     			data: data,
     			success: function(data, textStatus, jqXHR) {
+    				$('#addModal').modal('hide');
+    				var msg = data.message;
+    				alert(msg);
     				
     				if(data.code == 1) {
     					search();
-    					$('#addModal').modal('hide');
-    					//$.toast({text:'配置成功',type:'success',position:'center'});
-    				} else {
-    					var msg = data.message;
-    					$.toast({text:msg,type:'danger',position:'center'});
     				}
     			},
     			
@@ -192,9 +180,8 @@
         
         
         function search(){
-        	/* var name = $('#name').val();
-        	var tel = $('#tel').val(); */
-        	var url = "/ws/type/list?name=" + name + "&tel=" + tel;
+        	var name = $('#name').val();
+        	var url = "/ws/type/list?name=" + name;
         	$.ajax({
 				async: false,
 				url: url,
@@ -284,15 +271,13 @@
     			contentType: 'application/json',
     			data: data,
     			success: function(data, textStatus, jqXHR) {
-    				
+   					$('#editModal').modal('hide');
+   					var msg = data.message;
+   					alert(msg);
+   					
     				if(data.code == 1) {
-    					$('#editModal').modal('hide');
     					search();
-    					//$.toast({text:'配置成功',type:'success',position:'center'});
-    				} else {
-    					var msg = data.message;
-    					$.toast({text:msg,type:'danger',position:'center'});
-    				}
+    				} 
     			},
     			
     		});
