@@ -23,7 +23,11 @@ import com.mall.shopkeeper.iface.model.OrderInfo.Remark;
 import com.mall.shopkeeper.iface.model.OrderInfo.Status;
 @Component
 public class OrderIfaceImpl extends IfaceCommons implements OrderIface {
-
+	
+	private static final String NUM_PRICE_FORMAT = "%s * %s";
+	private static final String NUM_PRICE_DISCOUNT_FORMAT = "%s * %s * %s";
+	private static final String PLUS_SIGN = "+";
+	
     @Override
     public Response submit(HttpServletRequest request, HttpServletResponse response) {
         OrderInfo orderInfo = super.parseRequest(request, OrderInfo.class);
@@ -38,6 +42,7 @@ public class OrderIfaceImpl extends IfaceCommons implements OrderIface {
         double priceTotal = 0;
         double priceNeeded = 0;
         
+        StringBuilder totalSb = new StringBuilder();
         StringBuilder sb = new StringBuilder();
         if(null != productionInfos && productionInfos.size() > 0) {
             for(ProductionInfo productionInfo : productionInfos) {
@@ -47,12 +52,14 @@ public class OrderIfaceImpl extends IfaceCommons implements OrderIface {
                 
                 double subtotal = num * price * discount/10;
                 if(sb.length() <= 0){
-                    sb.append(num + "*" + price + "*" + discount/10);
+                	totalSb.append(String.format(NUM_PRICE_FORMAT, num, price));
+                    sb.append(String.format(NUM_PRICE_DISCOUNT_FORMAT, num, price, discount/10));
                 }else{
-                    sb.append("+");
-                    sb.append(num + "*" + price + "*" + discount/10);
+                	totalSb.append(PLUS_SIGN);
+                	totalSb.append(String.format(NUM_PRICE_FORMAT, num, price));
+                    sb.append(PLUS_SIGN);
+                    sb.append(String.format(NUM_PRICE_DISCOUNT_FORMAT, num, price, discount/10));
                 }
-                sb.append(num + "*" + price + "*" + discount/10);
                 productionInfo.setSubtotal(subtotal);
                 priceNeeded += subtotal;
                 priceTotal += num * price;
@@ -67,10 +74,13 @@ public class OrderIfaceImpl extends IfaceCommons implements OrderIface {
                 
                 double subtotal = num * price;
                 if(sb.length() <= 0){
-                    sb.append(num + "*" + price);
+                	totalSb.append(String.format(NUM_PRICE_FORMAT, num, price));
+                    sb.append(String.format(NUM_PRICE_FORMAT, num, price));
                 }else{
-                    sb.append("+");
-                    sb.append(num + "*" + price);
+                	totalSb.append(PLUS_SIGN);
+                	totalSb.append(String.format(NUM_PRICE_FORMAT, num, price));
+                    sb.append(PLUS_SIGN);
+                    sb.append(String.format(NUM_PRICE_FORMAT, num, price));
                 }
                 groupInfo.setSubtotal(subtotal);
                 priceNeeded += subtotal;
@@ -105,8 +115,7 @@ public class OrderIfaceImpl extends IfaceCommons implements OrderIface {
         
         order.setStatus(Status.CREATED);
         
-        order.setMessage(sb.toString());
-        
+        order.setMessage(String.format(" 总商品金额= %s \n 应付金额= %s", totalSb.toString(), sb.toString()));
         try{
             orderDao.create(order);
         }catch(Exception e){
